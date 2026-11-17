@@ -50,7 +50,8 @@ OUT="$OUT_DIR/$BASE.pdf"
 TMP_HTML="$SRC_DIR/.$BASE.print.html"
 trap 'rm -f "$TMP_HTML"' EXIT
 
-N=$(grep -o '<details' "$SRC_ABS" | wc -l | tr -d ' ')
+# 沒有 <details> 時 grep 回傳 1，加 || true 避免 pipefail 讓整個腳本默默結束
+N=$( { grep -o '<details' "$SRC_ABS" || true; } | wc -l | tr -d ' ')
 perl -pe 's/<details(?![^>]*\bopen\b)/<details open/g' "$SRC_ABS" > "$TMP_HTML"
 echo "  展開 $N 個 details"
 
