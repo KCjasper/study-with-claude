@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<!-- 示範筆記：虛構課程「程式設計一」。由 _templates/筆記範本.html 複製而來。 -->
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>W03 方法（Method）｜程式設計一</title>
+<style>
+  :root {
+    --bg: #f7f7f4; --fg: #1f2328; --muted: #5f6b76;
+    --accent: #0b5cad; --accent-soft: #e6f0fb;
+    --card: #ffffff; --line: #dfe3e8; --code: #eceff3; --bad: #d9534f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1115; --fg: #e7e7e4; --muted: #9aa4ae;
+      --accent: #7db4ff; --accent-soft: #16243a;
+      --card: #171a20; --line: #2a3038; --code: #1f242c; --bad: #e0716d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font-family: -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+    font-size: 17px; line-height: 1.8;
+  }
+  main { max-width: 720px; margin: 0 auto; padding: 32px 16px 64px; }
+  header { padding-bottom: 16px; margin-bottom: 8px; border-bottom: 1px solid var(--line); }
+  .kicker { color: var(--muted); font-size: 14px; }
+  h1 { font-size: 28px; line-height: 1.3; margin: 4px 0 0; }
+  h2 { font-size: 20px; line-height: 1.4; margin: 36px 0 12px; padding-left: 10px; border-left: 4px solid var(--accent); }
+  h3 { font-size: 17px; margin: 0 0 6px; }
+  p { margin: 0 0 12px; }
+  ul, ol { margin: 0 0 12px; padding-left: 1.4em; }
+  li { margin-bottom: 6px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin: 0 0 14px; }
+  .card p:last-child { margin-bottom: 0; }
+  .key { background: var(--accent-soft); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: 12px 14px; margin: 0 0 14px; }
+  .key p:last-child { margin-bottom: 0; }
+  .path { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 8px 0 10px; }
+  .path span { background: var(--code); border-radius: 999px; padding: 3px 12px; font-size: 14px; }
+  .path .arrow { background: none; color: var(--muted); padding: 0; }
+  .muted { color: var(--muted); font-size: 14px; }
+  code { background: var(--code); border-radius: 4px; padding: 2px 6px; font-family: ui-monospace, Menlo, monospace; font-size: 0.92em; }
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 0 12px; }
+  .compare div { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 15px; }
+  .compare .bad { border-color: var(--bad); }
+  .compare .good { border-color: var(--accent); }
+  .compare b { display: block; margin-bottom: 4px; font-size: 13px; color: var(--muted); }
+  @media (max-width: 480px) { .compare { grid-template-columns: 1fr; } }
+  .tbl { overflow-x: auto; margin: 0 0 14px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 15px; }
+  th, td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--code); font-weight: 600; white-space: nowrap; }
+  .formula { font-family: ui-monospace, Menlo, monospace; font-size: 16px; }
+  details { border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; margin: 0 0 10px; background: var(--card); }
+  summary { cursor: pointer; font-weight: 600; }
+  details[open] summary { margin-bottom: 8px; }
+  pre { background: var(--code); border-radius: 8px; padding: 10px 12px; overflow-x: auto; font-size: 14px; line-height: 1.5; margin: 0 0 12px; }
+  pre code { background: none; padding: 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } }
+  footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+  /* 列印／轉 PDF 用：強制淺色、避免區塊被分頁切斷 */
+  @media print {
+    :root {
+      --bg: #ffffff; --fg: #1f2328; --muted: #5f6b76;
+      --accent: #0b5cad; --accent-soft: #e6f0fb;
+      --card: #ffffff; --line: #dfe3e8; --code: #eceff3; --bad: #d9534f;
+    }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { font-size: 11pt; line-height: 1.62; }
+    main { max-width: none; padding: 0 0 6mm; }
+    h1 { font-size: 21pt; }
+    h2 { font-size: 14pt; margin-top: 20px; break-after: avoid; page-break-after: avoid; }
+    h3 { break-after: avoid; page-break-after: avoid; }
+    .card, .key, pre, details, .tbl, .compare { break-inside: avoid; page-break-inside: avoid; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+    summary { list-style: none; }
+    summary::-webkit-details-marker { display: none; }
+    footer { break-before: avoid; page-break-before: avoid; }
+  }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="kicker">程式設計一｜林老師（虛構）｜第 3 週 · 2026-09-30</div>
+  <h1>W03 方法（Method）：把程式切成小積木</h1>
+</header>
+
+<div class="key">
+  <p><strong>讀法：時間不夠先讀 ★ 的段落。</strong>所有程式和錯誤訊息都用 JDK 21 實際執行過。</p>
+</div>
+
+<h2>目錄</h2>
+<ol>
+  <li>★ 方法是什麼：一台小機器</li>
+  <li>★ 逐行看懂第一個方法</li>
+  <li>照著做：自己寫一個方法的 4 步</li>
+  <li>void：不回傳東西的方法</li>
+  <li>★ 常見錯誤（附真實錯誤訊息）</li>
+  <li>練習</li>
+</ol>
+
+<h2>1. ★ 方法是什麼：一台小機器</h2>
+<div class="card">
+  <h3>比喻：果汁機</h3>
+  <p>你把水果<strong>放進去</strong>（參數），它在裡面<strong>做事</strong>（方法本體），最後<strong>吐出</strong>一杯果汁（回傳值）。你不用每次都重新組一台果汁機，只要「呼叫」它就好。</p>
+  <div class="path"><span>參數 3、5</span><span class="arrow">→</span><span>add 方法</span><span class="arrow">→</span><span>回傳 8</span></div>
+</div>
+<p>為什麼要用方法？同一段計算會用很多次時，寫成方法只要寫一次；而且 <code>main</code> 會變短、好讀，出錯時也知道去哪一塊找。</p>
+
+<h2>2. ★ 逐行看懂第一個方法</h2>
+<pre><code>public class AddDemo {
+    static int add(int a, int b) {
+        int sum = a + b;
+        return sum;
+    }
+
+    static void greet(String name) {
+        System.out.println("哈囉，" + name);
+    }
+
+    public static void main(String[] args) {
+        int r = add(3, 5);
+        System.out.println("3 + 5 = " + r);
+        System.out.println("10 + 20 = " + add(10, 20));
+        greet("小明");
+    }
+}</code></pre>
+
+<div class="tbl">
+<table>
+  <tr><th>程式</th><th>白話</th></tr>
+  <tr><td><code>static</code></td><td>這個方法屬於整個類別，<code>main</code> 可以直接叫它（現階段先記：<strong>寫在 main 旁邊的方法都加 static</strong>）</td></tr>
+  <tr><td><code>int</code>（方法名前面）</td><td>回傳值的型態：這台機器最後吐出一個整數</td></tr>
+  <tr><td><code>add</code></td><td>方法的名字，自己取，動詞開頭、小寫開頭</td></tr>
+  <tr><td><code>(int a, int b)</code></td><td>參數：要放進機器的兩個整數，進來後叫 a 和 b</td></tr>
+  <tr><td><code>return sum;</code></td><td>把結果吐出去，方法到這裡結束</td></tr>
+  <tr><td><code>int r = add(3, 5);</code></td><td>呼叫：3 放進 a、5 放進 b，吐出的 8 存進 r</td></tr>
+  <tr><td><code>add(10, 20)</code> 直接放在 println 裡</td><td>回傳值可以直接拿來用，不一定要先存進變數</td></tr>
+</table>
+</div>
+
+<p>執行結果：</p>
+<pre><code>3 + 5 = 8
+10 + 20 = 30
+哈囉，小明</code></pre>
+
+<h2>3. 照著做：自己寫一個方法的 4 步</h2>
+<div class="card">
+  <ol>
+    <li><strong>想清楚進出</strong>：要放進什麼（參數型態）？吐出什麼（回傳型態）？什麼都不吐就是 <code>void</code>。</li>
+    <li><strong>先寫空殼</strong>：<code>static 回傳型態 名字(參數) { }</code>，在 main 裡先呼叫一次，確認能編譯。</li>
+    <li><strong>填本體</strong>：在大括號裡算，最後 <code>return</code>。</li>
+    <li><strong>用 2～3 組數字測</strong>：包含 0、負數這種邊界值。</li>
+  </ol>
+</div>
+
+<h2>4. void：不回傳東西的方法</h2>
+<div class="compare">
+  <div class="good"><b>有回傳值（int）</b>算出一個數字交給呼叫的人，呼叫的人決定要印還是要再算</div>
+  <div class="good"><b>void</b>自己把事情做完（例如印出來），不交回任何東西</div>
+</div>
+<p><code>greet("小明")</code> 是 void 方法：它自己印出「哈囉，小明」，所以呼叫時單獨一行就好，不能寫在等號右邊。</p>
+
+<h2>5. ★ 常見錯誤（附真實錯誤訊息）</h2>
+
+<div class="card">
+  <h3>錯誤 1：忘了 return</h3>
+<pre><code>static int add(int a, int b) {
+    int sum = a + b;
+}</code></pre>
+<pre><code>AddDemo.java:4: error: missing return statement
+    }
+    ^</code></pre>
+  <p>方法頭說會吐出 <code>int</code>，本體卻沒有 <code>return</code>。改法：最後加 <code>return sum;</code>。</p>
+</div>
+
+<div class="card">
+  <h3>錯誤 2：忘了 static</h3>
+<pre><code>int add(int a, int b) { return a + b; }
+...
+System.out.println(add(3, 5));   // 在 main 裡</code></pre>
+<pre><code>AddDemo.java:6: error: non-static method add(int,int) cannot be referenced from a static context
+        System.out.println(add(3, 5));
+                           ^</code></pre>
+  <p><code>main</code> 是 static，只能直接叫 static 方法。改法：方法頭加 <code>static</code>。</p>
+</div>
+
+<div class="card">
+  <h3>錯誤 3：回傳型態對不上</h3>
+<pre><code>static int half(int x) {
+    return x / 2.0;
+}</code></pre>
+<pre><code>AddDemo.java:3: error: incompatible types: possible lossy conversion from double to int
+        return x / 2.0;
+                 ^</code></pre>
+  <p><code>x / 2.0</code> 是小數（double），但方法說要吐 int。改法：回傳型態改成 <code>double</code>。</p>
+</div>
+
+<div class="card">
+  <h3>錯誤 4：把 void 方法的結果存起來</h3>
+<pre><code>String s = greet("小明");</code></pre>
+<pre><code>AddDemo.java:6: error: incompatible types: void cannot be converted to String
+        String s = greet("小明");
+                        ^</code></pre>
+  <p>void 方法什麼都不吐，沒有東西可以存。改法：單獨寫 <code>greet("小明");</code>。</p>
+</div>
+
+<div class="key">
+  <p><strong>看錯誤訊息的順序：檔名 → 行號 → 英文關鍵字。</strong></p>
+  <p>先跳到那一行，再對照上面四種：missing return、non-static、lossy conversion、void cannot be converted。</p>
+</div>
+
+<h2>6. 練習</h2>
+
+<details>
+  <summary>練習 1：<code>System.out.println(add(add(1, 2), 3));</code> 會印出什麼？</summary>
+  <p><strong>6</strong>。先算裡面的 <code>add(1, 2)</code> 得 3，再算 <code>add(3, 3)</code> 得 6。方法的回傳值可以直接當成另一次呼叫的參數。</p>
+</details>
+
+<details>
+  <summary>練習 2：寫一個 <code>max</code> 方法，傳入兩個整數，回傳比較大的那個。</summary>
+<pre><code>static int max(int a, int b) {
+    if (a > b) {
+        return a;
+    }
+    return b;
+}</code></pre>
+  <p>測試：<code>max(4, 9)</code> 印出 <code>9</code>，<code>max(-2, -7)</code> 印出 <code>-2</code>。第一個 return 執行到就離開方法，所以不用寫 else。</p>
+</details>
+
+<details>
+  <summary>練習 3：下面哪一行會編譯錯誤？為什麼？<br><code>static void show(int n) { System.out.println(n); }</code><br>(A) <code>show(5);</code>　(B) <code>int x = show(5);</code></summary>
+  <p><strong>(B)</strong>。show 是 void，不回傳任何東西，不能放在等號右邊。錯誤訊息會是 <code>void cannot be converted to int</code>。</p>
+</details>
+
+<footer>示範筆記，內容為原創，不引用任何課本或講義｜整理：2026-09-30</footer>
+</main>
+</body>
+</html>

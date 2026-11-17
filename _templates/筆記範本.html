@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<!-- 筆記範本：整份複製、換掉內容。CSS 內嵌、不引用外部資源，單檔就能開。
+     這是「原始檔」：寫完要轉成 PDF 交給使用者（流程見工作區 CLAUDE.md）。
+     轉 PDF 前記得把所有 <details> 加上 open，否則答案會是收合的。 -->
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>W00 主題｜課名</title>
+<style>
+  :root {
+    --bg: #f7f7f4; --fg: #1f2328; --muted: #5f6b76;
+    --accent: #0b5cad; --accent-soft: #e6f0fb;
+    --card: #ffffff; --line: #dfe3e8; --code: #eceff3; --bad: #d9534f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1115; --fg: #e7e7e4; --muted: #9aa4ae;
+      --accent: #7db4ff; --accent-soft: #16243a;
+      --card: #171a20; --line: #2a3038; --code: #1f242c; --bad: #e0716d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font-family: -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+    font-size: 17px; line-height: 1.8;
+  }
+  main { max-width: 720px; margin: 0 auto; padding: 32px 16px 64px; }
+  header { padding-bottom: 16px; margin-bottom: 8px; border-bottom: 1px solid var(--line); }
+  .kicker { color: var(--muted); font-size: 14px; }
+  h1 { font-size: 28px; line-height: 1.3; margin: 4px 0 0; }
+  h2 { font-size: 20px; line-height: 1.4; margin: 36px 0 12px; padding-left: 10px; border-left: 4px solid var(--accent); }
+  h3 { font-size: 17px; margin: 0 0 6px; }
+  p { margin: 0 0 12px; }
+  ul, ol { margin: 0 0 12px; padding-left: 1.4em; }
+  li { margin-bottom: 6px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin: 0 0 14px; }
+  .card p:last-child { margin-bottom: 0; }
+  .key { background: var(--accent-soft); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: 12px 14px; margin: 0 0 14px; }
+  .key p:last-child { margin-bottom: 0; }
+  .path { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 8px 0 10px; }
+  .path span { background: var(--code); border-radius: 999px; padding: 3px 12px; font-size: 14px; }
+  .path .arrow { background: none; color: var(--muted); padding: 0; }
+  .muted { color: var(--muted); font-size: 14px; }
+  code { background: var(--code); border-radius: 4px; padding: 2px 6px; font-family: ui-monospace, Menlo, monospace; font-size: 0.92em; }
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 0 12px; }
+  .compare div { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 15px; }
+  .compare .bad { border-color: var(--bad); }
+  .compare .good { border-color: var(--accent); }
+  .compare b { display: block; margin-bottom: 4px; font-size: 13px; color: var(--muted); }
+  @media (max-width: 480px) { .compare { grid-template-columns: 1fr; } }
+  .tbl { overflow-x: auto; margin: 0 0 14px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 15px; }
+  th, td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--code); font-weight: 600; white-space: nowrap; }
+  .formula { font-family: ui-monospace, Menlo, monospace; font-size: 16px; }
+  details { border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; margin: 0 0 10px; background: var(--card); }
+  summary { cursor: pointer; font-weight: 600; }
+  details[open] summary { margin-bottom: 8px; }
+  pre { background: var(--code); border-radius: 8px; padding: 10px 12px; overflow-x: auto; font-size: 14px; line-height: 1.5; margin: 0 0 12px; }
+  pre code { background: none; padding: 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } }
+  footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+  /* 列印／轉 PDF 用：強制淺色、避免區塊被分頁切斷 */
+  @media print {
+    :root {
+      --bg: #ffffff; --fg: #1f2328; --muted: #5f6b76;
+      --accent: #0b5cad; --accent-soft: #e6f0fb;
+      --card: #ffffff; --line: #dfe3e8; --code: #eceff3; --bad: #d9534f;
+    }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { font-size: 11pt; line-height: 1.62; }
+    main { max-width: none; padding: 0 0 6mm; }
+    h1 { font-size: 21pt; }
+    h2 { font-size: 14pt; margin-top: 20px; break-after: avoid; page-break-after: avoid; }
+    h3 { break-after: avoid; page-break-after: avoid; }
+    .card, .key, pre, details, .tbl, .compare { break-inside: avoid; page-break-inside: avoid; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+    summary { list-style: none; }
+    summary::-webkit-details-marker { display: none; }
+    footer { break-before: avoid; page-break-before: avoid; }
+  }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="kicker">課名｜教師｜第 N 週 · YYYY-MM-DD</div>
+  <h1>W00 主題</h1>
+</header>
+
+<h2>段落標題</h2>
+<p>一般段落。</p>
+<ul>
+  <li>條列</li>
+</ul>
+
+<!-- 觀念卡：一個觀念一張 -->
+<div class="card">
+  <h3>觀念名稱</h3>
+  <p>說明。</p>
+  <!-- 流程／路徑 -->
+  <div class="path"><span>A</span><span class="arrow">→</span><span>B</span><span class="arrow">→</span><span>C</span></div>
+  <p class="muted">補充或出處（小字）。</p>
+</div>
+
+<!-- 重點框：最該記住、考試會考的 -->
+<div class="key">
+  <p><strong>一句話重點。</strong></p>
+  <p>為什麼。</p>
+</div>
+
+<!-- 對照：不好 vs 好 -->
+<div class="compare">
+  <div class="bad"><b>不夠</b>……</div>
+  <div class="good"><b>可以</b>……</div>
+</div>
+
+<p>行內程式或指令用 <code>code</code>；整段指令或輸出用 <code>pre</code>：</p>
+<pre><code>python3 example.py</code></pre>
+
+<!-- 表格：外層 .tbl 讓手機可橫向捲動 -->
+<div class="tbl">
+<table>
+  <tr><th>欄</th><th>欄</th></tr>
+  <tr><td>值</td><td>值</td></tr>
+</table>
+</div>
+
+<!-- 自我測驗：先想再展開 -->
+<details>
+  <summary>檢核題：題目寫在這</summary>
+  <p>答案與理由。</p>
+</details>
+
+<footer>來源：講義檔名｜整理：YYYY-MM-DD</footer>
+</main>
+</body>
+</html>
